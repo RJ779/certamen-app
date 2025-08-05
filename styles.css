@@ -1,0 +1,86 @@
+body {
+  font-family: 'Times New Roman', Times, serif;
+  background: #f7f7d1;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.h1 {
+  margin-top: 2em;
+  margin-bottom: 0.2em;
+  font-size: 2.3em;
+  text-align: center;
+}
+.h2 {
+  font-size: 1.3em;
+  margin-bottom: 1em;
+  text-align: center;
+}
+.box {
+  background: white;
+  border-radius: 1.2em;
+  padding: 2em 2em 1em 2em;
+  margin: 2em auto;
+  width: 350px;
+  max-width: 90vw;
+  text-align: center;
+}
+.center-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 1em;
+}
+.center-file {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1em;
+}
+.center-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1em;
+}
+.center-answer-button {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1em;
+}
+#question {
+  font-size: 1.3em;
+  min-height: 2em;
+  margin-bottom: 1em;
+}
+#answer {
+  font-size: 1.1em;
+  color: #444;
+  margin-top: 1em;
+}
+button {
+  margin: 0.5em 0.3em;
+  padding: 0.4em 1.3em;
+  border-radius: 1em;
+  border: none;
+  background: #ffe580;
+  font-size: 1em;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button:hover { background: #ffeaa7; }
+#buzz {
+  background-color: gold;
+  color: #333;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#buzz:disabled { opacity: 0.5; }
+#buzzStatus {
+  margin-bottom: 1em;
+  font-weight: bold;
+  color: #800;
+}

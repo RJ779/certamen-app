@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Certamen Trainer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1 class="h1">Certamen Trainer</h1>
+  
+  <div class="box" id="file-box">
+    <h2 class="h2">Upload CSV file</h2>
+    <div class="center-row"> 
+      <label for="delimiter">Delimiter: </label>
+      <select id="delimiter">
+          <option value=",">Comma (,)</option>
+          <option value=";">Semicolon (;)</option>
+          <option value="	">Tab (↹)</option>
+          <option value="|">Pipe (|)</option>
+      </select>
+    </div>
+    <div class="center-file">
+      <input type="file" id="csvFile" accept=".csv"/>
+      <br><br>
+    </div>
+  </div>
+
+  <div class="box" id="qa-box" style="display:none;">
+    <div class="center-button">
+      <button id="buzz">Buzz!</button>
+      <div id="buzzStatus" style="margin-bottom:1em;"></div>
+    </div>
+    <div id="controls">
+      <div id="question"></div>
+      <div class="center-answer-button">
+          <button id="showAnswer">Show Answer</button>
+      </div>
+      <div id="answer" style="display:none;"></div>
+      <button id="next" style="display:none;">Next Question</button>
+    </div>
+  </div>
+
+  <script>
+    let flashcards = [];
+    let current = 0;
+    let typingInterval = null;
+    let buzzed = false;
+
+    document.getElementById('csvFile').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const lines = ev.target.result.split(/\r?\n/).filter(Boolean);
+        const delimiter = document.getElementById('delimiter').value;
+        flashcards = lines.slice(1).map(row => {
+          const qmIdx = row.indexOf('?');
+          if (qmIdx === -1) return {q: row, a: ""};
+          const delimIdx = row.indexOf(delimiter, qmIdx + 1);
+          if (delimIdx === -1) return {q: row, a: ""};
+          const q = row.slice(0, delimIdx).trim().replace(/^"|"$/g,'');
+          const a = row.slice(delimIdx + delimiter.length).trim().replace(/^"|"$/g,'');
+          return {q, a};
+        });
+        current = 0;
+        showQuestion();
+        document.getElementById('qa-box').style.display = '';
+      };
+      reader.readAsText(file);
+    });
+
+    function showQuestion() {
+      document.getElementById('answer').style.display = 'none';
+      document.getElementById('next').style.display = 'none';
+      document.getElementById('question').textContent = '';
+      document.getElementById('buzz').disabled = false;
+      document.getElementById('buzzStatus').textContent = '';
+      buzzed = false;
+      if (current >= flashcards.length) {
+        document.getElementById('question').textContent = 'Done! Reload to start over.';
+        document.getElementById('showAnswer').style.display = 'none';
+        document.getElementById('buzz').style.display = 'none';
+        return;
+      }
+      document.getElementById('showAnswer').style.display = '';
+      document.getElementById('buzz').style.display = '';
+      typeOut(flashcards[current].q, document.getElementById('question'));
+    }
+
+    function typeOut(text, el) {
+      let i = 0;
+      el.textContent = '';
+      clearInterval(typingInterval);
+      typingInterval = setInterval(() => {
+        if (i < text.length) {
+          el.textContent += text[i];
+          i++;
+        } else {
+          clearInterval(typingInterval);
+        }
+      }, 50);
+    }
+
+    document.getElementById('buzz').onclick = () => {
+      if (!buzzed) {
+        document.getElementById('buzz').disabled = true;
+        buzzed = true;
+        clearInterval(typingInterval);
+      }
+    };
+
+    document.getElementById('showAnswer').onclick = () => {
+      document.getElementById('answer').textContent = flashcards[current].a;
+      document.getElementById('answer').style.display = '';
+      document.getElementById('next').style.display = '';
+    };
+
+    document.getElementById('next').onclick = () => {
+      current++;
+      showQuestion();
+    };
+  </script>
+</body>
+</html>
